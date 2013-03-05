@@ -41,4 +41,16 @@ public class ConfigurationTest {
 		assertFalse(badconfig.isSsl());
 		assertNull(badconfig.getApiSecret());
 	}
+	
+	@Test
+	public void testSparkProperties() {
+		Configuration c = new Configuration();
+		Configuration.loadFromProperties(c, new File("src/test/resources/test_sparkapi.properties"));
+		assertEquals("sparkapi.com", c.getEndpoint());
+		assertEquals("<YOUR OAUTH2 CLIENT KEY>", c.getApiKey());
+		assertEquals("<YOUR OAUTH2 CLIENT SECRET>",c.getApiSecret());
+		assertEquals("SparkJava 1.0",c.getUserAgent());
+		assertTrue(c.isSsl());
+		
+	}
 }
