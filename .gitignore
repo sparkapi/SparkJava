@@ -1,4 +1,9 @@
+# maven
+target/
 *.class
+
+# eclipse
+.settings
 
 # Package Files #
 *.jar
