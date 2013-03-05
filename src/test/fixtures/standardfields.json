@@ -1,0 +1,25 @@
+{
+    "D": {
+        "Success": true,
+        "Results": [
+            {
+                "City": {
+                    "Searchable": true,
+                    "Type": "Character",
+                    "ResourceUri": "/v1/standardfields/City",
+                    "HasList": true
+                },
+                "BedsTotal": {
+                    "Searchable": true,
+                    "Type": "Integer",
+                    "ResourceUri": "/v1/standardfields/BedsTotal"
+                },
+                "ListPrice": {
+                    "Searchable": true,
+                    "Type": "Decimal",
+                    "ResourceUri": "/v1/standardfields/ListPrice"
+                }
+            }
+        ]
+    }
+}

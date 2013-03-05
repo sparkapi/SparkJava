@@ -1,0 +1,29 @@
+{
+    "D": {
+        "Success": true,
+        "Results": [
+            {
+                "City": {
+                    "Searchable": true,
+                    "Type": "Character",
+                    "ResourceUri": "/v1/standardfields/City",
+                    "HasList": true,
+                    "FieldList": [
+                        {
+                            "Value": "Fargo",
+                            "Name": "Fargo"
+                        },
+                        {
+                            "Value": "West Fargo",
+                            "Name": "West Fargo"
+                        },
+                        {
+                            "Value": "Moorhead",
+                            "Name": "Moorhead"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "D": {
+        "Success": true,
+        "Results": [
+            {
+                "Name" : "Sample User",
+                "Id" : "20000426173054342350000000",
+                "Office" : "Sample Office Inc",
+                "OfficeId" : "20000627173054072660000000",
+                "Mls" : "Your Local MLS",
+                "MlsId": "20000426143505724628000000",
+                "Configuration" : [
+                    {
+                        "MlsLogos": [], 
+                        "IdxDisclaimer": "", 
+                        "IdxLogoSmall": "", 
+                        "OAuth2ServiceEndpointPrivate": "https://dev.fbsdata.com/r/oauth2", 
+                        "IdxLogo": ""
+                    }
+                ]
+            }
+        ]
+    }
+}

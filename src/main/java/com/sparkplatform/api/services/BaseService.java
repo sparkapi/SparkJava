@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import com.sparkplatform.api.SparkAPIClientException;
 import com.sparkplatform.api.core.ApiParameter;
 import com.sparkplatform.api.core.Client;

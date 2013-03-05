@@ -1,0 +1,10 @@
+{
+  "D": {
+    "Success": true, 
+    "Results": [
+      {"Foo": "MyFoo", "Bar": 1},
+      {"Foo": "Fighters", "Bar": 2},
+      {"Foo": "Kung FU", "Bar": 3}
+    ]
+  }
+}
