@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -122,6 +121,21 @@ public class SparkAPITest {
 		catch(Exception e)
 		{
 			fail("Exception thrown");
+		}
+	}
+	
+	@Test
+	public void testDeleteListingCart() {
+		try {
+			connection.stubDelete(
+					"/" + c.getVersion() + "/listingcarts/1",
+					"success.json", 
+					200);
+			Response r = sparkAPI.delete("/listingcarts/1",null);
+			assertNotNull(r);
+			assertTrue(r.isSuccess());
+		} catch (SparkAPIClientException e) {
+			fail("SparkAPIClientException thrown");
 		}
 	}
 	
