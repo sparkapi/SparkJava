@@ -101,7 +101,28 @@ public class SparkAPITest {
 		{
 			fail("Exception thrown");
 		}
-		
+	}
+	
+	@Test
+	public void testPostListingCart() {
+		try
+		{
+			String body = getBodyFixture("spark_postListingCarts.json");
+			connection.stubPost(
+					"/" + c.getVersion() + "/listingcarts",
+					body,
+					"successPost.json", 
+					200);
+			Response r = sparkAPI.post("/listingcarts",body,null);
+			assertNotNull(r);
+			assertTrue(r.isSuccess());
+			JsonNode result = r.getFirstResult();
+			assertNotNull(result.get("ResourceUri"));			
+		}
+		catch(Exception e)
+		{
+			fail("Exception thrown");
+		}
 	}
 	
 	private String getBodyFixture(String bodyFile) throws IOException
