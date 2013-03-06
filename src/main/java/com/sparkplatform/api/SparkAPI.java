@@ -302,9 +302,16 @@ public class SparkAPI extends Client {
 	
 	protected String requestPath(String path, Map<String, String> params) {
 		StringBuilder b = new StringBuilder();
-		b.append("/").append(getConfig().getVersion()).append(path).append("?");
-		for (String key : params.keySet()) {
-			b.append("&").append(key).append("=").append(encode(params.get(key)));
+		b.append("/").append(getConfig().getVersion()).append(path);
+		if(params != null && params.size() > 0)
+		{
+			b.append("?");
+			int i = 0;
+			for (String key : params.keySet()) {
+				if(i++ > 0)
+					b.append("&");
+				b.append(key).append("=").append(encode(params.get(key)));
+			}
 		}
 		return b.toString();
 	}
@@ -320,7 +327,8 @@ public class SparkAPI extends Client {
 	{
 		super.setSession(session);
 		Connection<Response> connection = getConnection();
-		((ConnectionApacheHttp)connection).setHeaders(getHeaders());
+		if(connection instanceof ConnectionApacheHttp)
+			((ConnectionApacheHttp)connection).setHeaders(getHeaders());
 	}
 	
 	public SparkSession getSparkSession()

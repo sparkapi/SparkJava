@@ -1,79 +1,80 @@
 package com.sparkplatform.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonNode;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.sparkplatform.api.core.ApiParameter;
 import com.sparkplatform.api.core.Configuration;
+import com.sparkplatform.api.core.MockConnection;
+import com.sparkplatform.api.core.Response;
+import com.sparkplatform.api.models.Listing;
 
 public class SparkAPITest {
+	private SparkAPI sparkAPI;
+	private Configuration c;
+	private MockConnection connection;
 	
-	private static final String authorizationURLBase = 
-			"https://sparkplatform.com/oauth2/callback?";
-	private static final String hybridAuthorizationURLPass = 
-			authorizationURLBase + "openid.mode=id_res&openid.spark.code=foobar";
-	private static final String authorizationURLFail = 
-			"https://sparkplatform.com/ticket";
-	
-	private static final String openIdAuthorizationURLPass = 
-			authorizationURLBase + "openid.mode=id_res&openid.ax.value.id=foobar";
-	
-	
-	@Test
-	public void testIsHybridAuthorized() {
-		assertNotNull(SparkAPI.isHybridAuthorized(hybridAuthorizationURLPass));
-		assertNull(SparkAPI.isHybridAuthorized(authorizationURLFail));
-	}
-	
-	@Test
-	public void testOpenIdAuthenticate() throws SparkAPIClientException {
-		Configuration c = new Configuration();
-		SparkAPI.setConfiguration(c);
-		c.setUserAgent("SparkAPITest");
-
-		SparkAPI sparkAPI = SparkAPI.getInstance();
-		assertNotNull(sparkAPI.openIdAuthenticate(openIdAuthorizationURLPass));
-		assertNull(sparkAPI.openIdAuthenticate(authorizationURLFail));
-	}
-	
-	@Test
-	public void testSparkHeaders()
-	{
-		SparkAPI sparkAPI = new SparkAPI(new Configuration());
+	@Before
+	public void setup(){
 		try {
-			sparkAPI.getHeaders();
-			fail("SparkAPIClientExeption not thrown");
-		} catch (SparkAPIClientException e) {
-			// success
-		}
-		
-		// default headers
-		try {
-			Configuration c = new Configuration();
+			c = new Configuration();
+			c.setApiKey("ApiKey");
+			c.setApiSecret("ApiSecret");
 			c.setUserAgent("SparkAPITest");
-			sparkAPI.setConfig(c);
-			Map<String, String> headers = sparkAPI.getHeaders();
-			assertNotNull(headers.get(SparkAPI.userAgentHeader));
-			assertNotNull(headers.get(SparkAPI.apiUserAgentHeader));
-			assertNull(headers.get(SparkAPI.authorizationHeader));
-		} catch (SparkAPIClientException e) {
-			fail("exception thrown");
-		}
-		
-		// session headers
-		try {
+			connection = new MockConnection();
+			sparkAPI = new SparkAPI(c,connection,connection);
 			SparkSession session = new SparkSession();
 			session.setAccessToken("accessToken");
+			session.setRefreshToken("refreshToken");
 			sparkAPI.setSession(session);
-			Map<String, String> headers = sparkAPI.getHeaders();
-			assertNotNull(headers.get(SparkAPI.authorizationHeader));
 		} catch (SparkAPIClientException e) {
-			fail("exception thrown");
+			fail("SparkAPIClientException thrown");
 		}
+	}
+	
+	@Test
+	public void testGetMyAccount() {
+		try {
+			connection.stubGet(
+					"/" + c.getVersion() + "/my/account",
+					"spark_myAccount.json", 
+					200);
+			Response r = sparkAPI.get("/my/account",null);
+			assertTrue(r.isSuccess());
+			JsonNode account = r.getFirstResult();
+			assertNotNull(account);
+			assertEquals(account.get("Mls").getTextValue(),"Humboldt Association of REALTORS");
+		} catch (SparkAPIClientException e) {
+			fail("SparkAPIClientException thrown");
+		}
+	}
+
+	@Test
+	public void testGetListings() {
+		try {
+			connection.stubGet(
+					"/" + c.getVersion() + "/listings?_limit=1&_filter=PropertyType+Eq+%27A%27",
+					"spark_listing.json", 
+					200);
+			Map<ApiParameter,String> parameters = new HashMap<ApiParameter,String>();
+			parameters.put(ApiParameter._limit, "1");
+			parameters.put(ApiParameter._filter, "PropertyType Eq 'A'");
+			Response r = sparkAPI.get("/listings",parameters);
+			assertTrue(r.isSuccess());
+   		 	assertNotNull(r.getResults(Listing.class));
+		} catch (SparkAPIClientException e) {
+			fail("SparkAPIClientException thrown");
+		}
+
 	}
 	
 }
