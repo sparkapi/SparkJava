@@ -5,6 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +53,7 @@ public class SparkAPITest {
 					"spark_myAccount.json", 
 					200);
 			Response r = sparkAPI.get("/my/account",null);
+			assertNotNull(r);
 			assertTrue(r.isSuccess());
 			JsonNode account = r.getFirstResult();
 			assertNotNull(account);
@@ -69,6 +74,7 @@ public class SparkAPITest {
 			parameters.put(ApiParameter._limit, "1");
 			parameters.put(ApiParameter._filter, "PropertyType Eq 'A'");
 			Response r = sparkAPI.get("/listings",parameters);
+			assertNotNull(r);
 			assertTrue(r.isSuccess());
    		 	assertNotNull(r.getResults(Listing.class));
 		} catch (SparkAPIClientException e) {
@@ -77,4 +83,44 @@ public class SparkAPITest {
 
 	}
 	
+	@Test
+	public void testPutMyAccount() {
+		try
+		{
+			String body = getBodyFixture("spark_putMyAccount.json");
+			connection.stubPut(
+					"/" + c.getVersion() + "/my/account",
+					body,
+					"success.json", 
+					200);
+			Response r = sparkAPI.put("/my/account",body,null);
+			assertNotNull(r);
+			assertTrue(r.isSuccess());
+		}
+		catch(Exception e)
+		{
+			fail("Exception thrown");
+		}
+		
+	}
+	
+	private String getBodyFixture(String bodyFile) throws IOException
+	{
+		BufferedReader br = null;
+		try
+		{
+			br = new BufferedReader(new FileReader("src/test/fixtures/" + bodyFile));
+			String line = null;
+			StringBuilder builder = new StringBuilder();
+			while ((line = br.readLine()) != null) {
+				builder.append(line);
+				builder.append("\r\n");
+			}
+			return builder.toString();
+		}
+		finally
+		{
+			br.close();			
+		}
+	}
 }
