@@ -25,10 +25,7 @@ public class SparkSessionTest {
 
 	@Test
 	public void testNotExpired() {
-		
-		SparkSession session = new SparkSession();
-		session.setAccessToken("accessToken");
-		session.setRefreshToken("refreshToken");
+		SparkSession session = getHybridSession();
 		assertFalse(session.isExpired());
 	}
 
@@ -36,6 +33,29 @@ public class SparkSessionTest {
 	public void testExpired() {
 		SparkSession session = new SparkSession();
 		assertTrue(session.isExpired());
+	}
+	
+	@Test
+	public void testIsHybridSession() {
+		SparkSession session = getHybridSession();
+		assertTrue(session.isHybridSession());
+	}
+	
+	@Test
+	public void testIsOpenIDSession() {
+		SparkSession session1 = getHybridSession();
+		assertFalse(session1.isOpenIDSession());
+		
+		SparkSession session2 = new SparkSession();
+		session2.setOpenIdToken("openIdToken");
+		assertTrue(session2.isOpenIDSession());
+	}
+	
+	private SparkSession getHybridSession() {
+		SparkSession session = new SparkSession();
+		session.setAccessToken("accessToken");
+		session.setRefreshToken("refreshToken");
+		return session;
 	}
 	
 }

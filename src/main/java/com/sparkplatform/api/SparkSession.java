@@ -29,7 +29,7 @@ public class SparkSession extends Session {
 	private String accessToken;
 	@JsonProperty("refresh_token")
 	private String refreshToken;
-	private String openIdToken;
+	private String openIDToken;
 	
 	public String getAccessToken() {
 		return accessToken;
@@ -48,15 +48,23 @@ public class SparkSession extends Session {
 	}
 	
 	public String getOpenIdToken() {
-		return openIdToken;
+		return openIDToken;
 	}
 	
-	public void setOpenIdToken(String openIdToken) {
-		this.openIdToken = openIdToken;
+	public void setOpenIdToken(String openIDToken) {
+		this.openIDToken = openIDToken;
 	}
 	
 	public boolean isExpired(){
 		return accessToken == null || refreshToken == null;
+	}
+	
+	public boolean isHybridSession() {
+		return accessToken != null && refreshToken != null;
+	}
+	
+	public boolean isOpenIDSession() {
+		return openIDToken != null;
 	}
 	
 	Session authenticate() throws SparkAPIClientException {

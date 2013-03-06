@@ -86,13 +86,13 @@ public class SparkAPI extends Client {
 	public boolean isHybridSession()
 	{
 		SparkSession session = (SparkSession)getSession();
-		return session != null && session.getAccessToken() != null && session.getRefreshToken() != null;
+		return session != null && session.isHybridSession();
 	}
 	
 	public boolean isOpenIDSession()
 	{
 		SparkSession session = (SparkSession)getSession();
-		return session != null && session.getOpenIdToken() != null;
+		return session != null && session.isOpenIDSession();
 	}
 	
 	public String getSparkOpenIdURLString()
