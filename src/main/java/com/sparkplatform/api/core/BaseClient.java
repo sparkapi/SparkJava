@@ -223,7 +223,7 @@ public abstract class BaseClient<U> implements HttpActions<Response, U>{
 		return config;
 	}
 
-	protected void setConfig(Configuration config) {
+	public void setConfig(Configuration config) {
 		this.config = config;
 	}
 	

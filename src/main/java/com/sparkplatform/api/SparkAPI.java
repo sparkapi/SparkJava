@@ -39,8 +39,12 @@ public class SparkAPI extends Client {
 	
 	public static final String sparkOpenIdLogoutURL = "https://sparkplatform.com/openid/logout";
 	
-	public static final String sparkAPILibrary = "Spark Android API 1.0";
+	public static final String sparkAPILibrary = "Spark Java API 1.0";
 	public static final String sparkOAuth2Grant = "/oauth2/grant";
+	
+	public static final String userAgentHeader = "User-Agent";
+	public static final String apiUserAgentHeader = "X-SparkApi-User-Agent";
+	public static final String authorizationHeader = "Authorization";
 	
 	// class vars *************************************************************
 	
@@ -269,12 +273,12 @@ public class SparkAPI extends Client {
 	public Map<String,String> getDefaultHeaders() throws SparkAPIClientException
 	{
 		Map<String,String> headers = new HashMap<String,String>();
-		headers.put("User-Agent", sparkAPILibrary);
+		headers.put(userAgentHeader, sparkAPILibrary);
 		String sparkAPIUserAgent = getConfig().getUserAgent();
 		if(sparkAPIUserAgent == null || sparkAPIUserAgent.trim().length() == 0)
 			throw new SparkAPIClientException("Please set the sparkAPIUserAgent for your application!");
 		else
-			headers.put("X-SparkApi-User-Agent", sparkAPIUserAgent);
+			headers.put(apiUserAgentHeader, sparkAPIUserAgent);
 		return headers;
 	}
 	
@@ -283,7 +287,7 @@ public class SparkAPI extends Client {
 		Map<String,String> headers = getDefaultHeaders();
 		SparkSession session = (SparkSession)getSession();
 		if(session != null && session.getAccessToken() != null)
-			headers.put("Authorization", "OAuth " + session.getAccessToken());
+			headers.put(authorizationHeader, "OAuth " + session.getAccessToken());
 		return headers;
 	}
 	
