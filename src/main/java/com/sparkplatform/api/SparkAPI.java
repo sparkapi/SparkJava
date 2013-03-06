@@ -77,11 +77,11 @@ public class SparkAPI extends Client {
 		return configuration;
 	}
 	
-	private SparkAPI(Configuration config) {
+	protected SparkAPI(Configuration config) {
 		super(config);
 	}
 	
-	private SparkAPI(Configuration config, Connection<Response> defaultConnection, Connection<Response> secureConnection) {
+	protected SparkAPI(Configuration config, Connection<Response> defaultConnection, Connection<Response> secureConnection) {
 		super(config, defaultConnection, secureConnection);
 	}
 

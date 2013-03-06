@@ -43,7 +43,7 @@ public class SparkAPITest {
 	@Test
 	public void testSparkHeaders()
 	{
-		SparkAPI sparkAPI = SparkAPI.getInstance();
+		SparkAPI sparkAPI = new SparkAPI(new Configuration());
 		try {
 			sparkAPI.getHeaders();
 			fail("SparkAPIClientExeption not thrown");
