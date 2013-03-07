@@ -1,5 +1,6 @@
 package com.sparkplatform.api;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -8,18 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.sparkplatform.api.core.Client;
@@ -141,10 +135,10 @@ public class SparkAPI extends Client {
 		return builder.toString();
 	}
 
-	public String getSparkOAuth2GrantString()
+	public String getSparkOAuth2GrantPath()
 	{
 		Configuration c = getConfig();
-		return "https://" + c.getEndpoint()  + "/" + c.getVersion() + sparkOAuth2Grant;
+		return "/" + c.getVersion() + sparkOAuth2Grant;
 	}
 	
 	public static String isHybridAuthorized(String url)
@@ -163,25 +157,14 @@ public class SparkAPI extends Client {
 	
 	public SparkSession hybridAuthenticate(String openIdSparkCode) throws SparkAPIClientException
 	{
-		Configuration c = getConfig();
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("client_id", c.getApiKey());
-		map.put("client_secret", c.getApiSecret());
-		map.put("grant_type", "authorization_code");
-		map.put("code", openIdSparkCode);
-		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
-
 		SparkSession sparkSession = null;
 		try
 		{
-			HttpPost post = new HttpPost(getSparkOAuth2GrantString());
-			initSparkHeader(post);
-			StringEntity stringEntity = new StringEntity(objectMapper.writeValueAsString(map));
-			stringEntity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
-			post.setEntity(stringEntity);
-			HttpClient httpclient = new DefaultHttpClient(); 
-			HttpResponse response = httpclient.execute(post);
-			String responseBody = EntityUtils.toString(response.getEntity());
+			Connection<Response> connection = getConnection();
+			if(connection instanceof ConnectionApacheHttp)
+				((ConnectionApacheHttp)connection).setHeaders(getDefaultHeaders());
+			Response r = connection.post(getSparkOAuth2GrantPath(), getOAuthRequestJSON(openIdSparkCode));
+			String responseBody = r.getRootNode().toString();
 			logger.debug("OAuth2 response>" + responseBody);
 			sparkSession = objectMapper.readValue(responseBody, SparkSession.class);
 			setSession(sparkSession);
@@ -194,6 +177,18 @@ public class SparkAPI extends Client {
 		return sparkSession;
 	}
 
+	protected String getOAuthRequestJSON(String openIdSparkCode) throws JsonGenerationException, JsonMappingException, IOException
+	{
+		Configuration c = getConfig();
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("client_id", c.getApiKey());
+		map.put("client_secret", c.getApiSecret());
+		map.put("grant_type", "authorization_code");
+		map.put("code", openIdSparkCode);
+		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
+		return objectMapper.writeValueAsString(map);
+	}
+	
 	public SparkSession openIdAuthenticate(String url) throws SparkAPIClientException
 	{
 		List<NameValuePair> params = getURLParams(url);
@@ -228,7 +223,7 @@ public class SparkAPI extends Client {
 
 		Response response = null;
 		try {
-			response = getConnection().post(getSparkOAuth2GrantString(),objectMapper.writeValueAsString(map));
+			response = getConnection().post(getSparkOAuth2GrantPath(),objectMapper.writeValueAsString(map));
 		} catch (Exception e) {
 			throw new SparkAPIClientException("Session mapping error",e);
 		}
@@ -263,12 +258,14 @@ public class SparkAPI extends Client {
 		return null;
 	}
 	
+	/*
 	public void initSparkHeader(HttpUriRequest httpRequest) throws SparkAPIClientException
 	{		
 		Map<String, String> headers = getDefaultHeaders();
 		for(String key : headers.keySet())
 			httpRequest.setHeader(key,headers.get(key));
 	}
+	*/
 	
 	public Map<String,String> getDefaultHeaders() throws SparkAPIClientException
 	{

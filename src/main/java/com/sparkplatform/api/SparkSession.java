@@ -16,13 +16,9 @@
 
 package com.sparkplatform.api;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.sparkplatform.api.core.Session;
-
-
-@JsonIgnoreProperties({"expires_in"})
 
 public class SparkSession extends Session {
 	@JsonProperty("access_token")
@@ -30,6 +26,13 @@ public class SparkSession extends Session {
 	@JsonProperty("refresh_token")
 	private String refreshToken;
 	private String openIDToken;
+	
+	@JsonProperty("expires_in")
+	private int expiresIn;
+	@JsonProperty("error")
+	private String error;
+	@JsonProperty("error_description")
+	private String errorDescription;
 	
 	public String getAccessToken() {
 		return accessToken;
@@ -71,4 +74,38 @@ public class SparkSession extends Session {
 		throw new SparkAPIClientException("Spark authentication required");
 	}
 	
+	public int getExpiresIn()
+	{
+		return expiresIn;
+	}
+	
+	public void setExpiresIn(int expiresIn)
+	{
+		this.expiresIn = expiresIn;
+	}
+
+	public boolean hasError()
+	{
+		return getError() != null;
+	}
+	
+	public String getError()
+	{
+		return error;
+	}
+	
+	public void setError(String error)
+	{
+		this.error = error;
+	}
+	
+	public String getErrorDescription()
+	{
+		return errorDescription;
+	}
+	
+	public void setErrorDescription(String errorDescription)
+	{
+		this.errorDescription = errorDescription;
+	}	
 }

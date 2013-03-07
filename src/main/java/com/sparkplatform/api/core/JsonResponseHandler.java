@@ -62,19 +62,31 @@ public class JsonResponseHandler implements ResponseHandler<Response> {
 	
 	private Response parse(JsonNode root, int status){
 		 // can reuse, share globally
+		Response r = null;
 		JsonNode rootNode = root.get("D");
-		Response r = new Response(mapper, rootNode);
-		r.setSuccess(rootNode.get("Success").getValueAsBoolean());
-		r.setStatus(status);
-		if(!r.isSuccess())
+		// SparkAPI response
+		if(rootNode != null)
 		{
-			JsonNode codeNode = rootNode.get("Code");
-			if(codeNode != null && codeNode.isInt())
-				r.setCode(codeNode.getValueAsInt());
-			JsonNode messageNode = rootNode.get("Message");
-			if(messageNode != null)
-				r.setMessage(messageNode.getValueAsText());
+			r = new Response(mapper, rootNode);
+			r.setSuccess(rootNode.get("Success").getValueAsBoolean());
+			r.setStatus(status);
+			if(!r.isSuccess())
+			{
+				JsonNode codeNode = rootNode.get("Code");
+				if(codeNode != null && codeNode.isInt())
+					r.setCode(codeNode.getValueAsInt());
+				JsonNode messageNode = rootNode.get("Message");
+				if(messageNode != null)
+					r.setMessage(messageNode.getValueAsText());
+			}
 		}
+		// OAuth response
+		else
+		{
+			r = new Response(mapper,root);
+			r.setSuccess(root.get("error") == null);
+		}
+			
 		return r;		
 	}
 }

@@ -31,6 +31,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.log4j.Logger;
 
 import com.sparkplatform.api.SparkAPIClientException;
 
@@ -39,6 +42,8 @@ import com.sparkplatform.api.SparkAPIClientException;
  * Connection wrapper for the Apache HTTPClient library.
  */
 public class ConnectionApacheHttp extends Connection<Response> {
+	
+	private static Logger logger = Logger.getLogger(ConnectionApacheHttp.class);
 	
 	private HttpClient client;
 	private Configuration config;
@@ -97,6 +102,7 @@ public class ConnectionApacheHttp extends Connection<Response> {
 		HttpEntity data;
 		try {
 			data = new StringEntity(body);
+			((StringEntity)data).setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
 			r.setEntity(data);
 		} catch (UnsupportedEncodingException e) {
 			throw new SparkAPIClientException("Message cannot be sent as the body is encoded in an unsupported format.", e);

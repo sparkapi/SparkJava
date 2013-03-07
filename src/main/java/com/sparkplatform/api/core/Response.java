@@ -91,6 +91,11 @@ public class Response {
 		}
 	}
 	
+	public JsonNode getRootNode()
+	{
+		return rootNode;
+	}
+	
 	public String getResultsJSONString()
 	{
 		JsonNode results = getResultsJSON();

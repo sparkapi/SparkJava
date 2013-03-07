@@ -51,6 +51,13 @@ public class SparkSessionTest {
 		assertTrue(session2.isOpenIDSession());
 	}
 	
+	@Test
+	public void testIsErrorSession() {
+		SparkSession session = new SparkSession();
+		session.setError("error");
+		assertTrue(session.hasError());
+	}
+	
 	private SparkSession getHybridSession() {
 		SparkSession session = new SparkSession();
 		session.setAccessToken("accessToken");
