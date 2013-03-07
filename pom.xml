@@ -28,11 +28,6 @@
                <artifactId>log4j</artifactId>
                <version>1.2.16</version>
        </dependency>
-       <dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.4</version>
-	   </dependency>
 
        <!--  JUnit -->
        <dependency>
