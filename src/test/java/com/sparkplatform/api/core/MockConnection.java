@@ -22,9 +22,11 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.mockito.stubbing.OngoingStubbing;
 
 import com.sparkplatform.api.SparkAPIClientException;
 
@@ -40,10 +42,23 @@ public class MockConnection extends Connection<Response> {
 	}
 	
 	public void stubGet(String path, String fixture, int status) throws SparkAPIClientException {
-		logger.debug("STUBBED: " + path);
-		Response r = parseFile(fixture, status);
+		stubGet(path, new Stub(fixture,status));
+	}
+	
+	public void stubGet(String path, Stub stub) throws SparkAPIClientException {
+		Response r = parseFile(stub.fixture, stub.status);
 		when(c.get(path)).thenReturn(r);
 	}
+	
+	public void stubGet(String path, List<Stub> stubs) throws SparkAPIClientException {
+		OngoingStubbing<Response> ongoingStubbing = when(c.get(path));
+		for(Stub stub : stubs)
+		{
+			Response r = parseFile(stub.fixture, stub.status);
+			ongoingStubbing = ongoingStubbing.thenReturn(r);
+		}
+	}
+	
 	public void stubPost(String path, String body, String fixture, int status) throws SparkAPIClientException {
 		Response r = parseFile(fixture, status);
 		when(c.post(path, body)).thenReturn(r);
@@ -70,25 +85,44 @@ public class MockConnection extends Connection<Response> {
 	@Override
 	public Response get(String path, Map<String, String> options)
 			throws SparkAPIClientException {
-		return c.get(path);
+		Response r = c.get(path);
+		if(r != null)
+			r.checkFailures();
+		return r;
 	}
 
 	@Override
 	public Response post(String path, String body, Map<String, String> options)
 			throws SparkAPIClientException {
-		return c.post(path, body);
+		Response r = c.post(path, body);
+		return r;
+
 	}
 
 	@Override
 	public Response put(String path, String body, Map<String, String> options)
 			throws SparkAPIClientException {
-		return c.put(path, body);
+		Response r = c.put(path, body);
+		return r;
 	}
 
 	@Override
 	public Response delete(String path, Map<String, String> options)
 			throws SparkAPIClientException {
-		return c.delete(path);
+		Response r = c.delete(path);
+		return r;
+	}
+	
+	public static class Stub
+	{
+		private String fixture;
+		private int status;
+		
+		public Stub(String fixture, int status)
+		{
+			this.fixture = fixture;
+			this.status = status;
+		}
 	}
 	
 }

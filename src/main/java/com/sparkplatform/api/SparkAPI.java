@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -163,10 +164,8 @@ public class SparkAPI extends Client {
 			Connection<Response> connection = getConnection();
 			if(connection instanceof ConnectionApacheHttp)
 				((ConnectionApacheHttp)connection).setHeaders(getDefaultHeaders());
-			Response r = connection.post(getSparkOAuth2GrantPath(), getOAuthRequestJSON(openIdSparkCode));
-			String responseBody = r.getRootNode().toString();
-			logger.debug("OAuth2 response>" + responseBody);
-			sparkSession = objectMapper.readValue(responseBody, SparkSession.class);
+			Response r = connection.post(getSparkOAuth2GrantPath(), getOAuthRequestJSON("authorization_code", openIdSparkCode, null));
+			sparkSession = getAuthSession(r);
 			setSession(sparkSession);
 		} 
 		catch (Exception e)
@@ -177,14 +176,24 @@ public class SparkAPI extends Client {
 		return sparkSession;
 	}
 
-	protected String getOAuthRequestJSON(String openIdSparkCode) throws JsonGenerationException, JsonMappingException, IOException
+	private SparkSession getAuthSession(Response r) throws JsonParseException, JsonMappingException, IOException
+	{
+		String responseBody = r.getRootNode().toString();
+		logger.debug("OAuth2 response>" + responseBody);
+		return objectMapper.readValue(responseBody, SparkSession.class);
+	}
+	
+	protected String getOAuthRequestJSON(String grantType, String openIdSparkCode, String refreshToken) throws JsonGenerationException, JsonMappingException, IOException
 	{
 		Configuration c = getConfig();
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("client_id", c.getApiKey());
 		map.put("client_secret", c.getApiSecret());
-		map.put("grant_type", "authorization_code");
-		map.put("code", openIdSparkCode);
+		map.put("grant_type", grantType);
+		if(openIdSparkCode != null)
+			map.put("code", openIdSparkCode);
+		if(refreshToken != null)
+			map.put("refresh_token", refreshToken);
 		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
 		return objectMapper.writeValueAsString(map);
 	}
@@ -213,26 +222,14 @@ public class SparkAPI extends Client {
 	
 	protected Session authenticate() throws SparkAPIClientException 
 	{
-		Configuration c = getConfig();
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("client_id", c.getApiKey());
-		map.put("client_secret", c.getApiSecret());
-		map.put("grant_type", "refresh_token");
-		map.put("refresh_token", getSparkSession().getRefreshToken());
-		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
-
-		Response response = null;
+		Session s = null;
 		try {
-			response = getConnection().post(getSparkOAuth2GrantPath(),objectMapper.writeValueAsString(map));
+			Response response = getConnection().post(getSparkOAuth2GrantPath(),getOAuthRequestJSON("refresh_token", null, getSparkSession().getRefreshToken()));
+			s = getAuthSession(response);
 		} catch (Exception e) {
 			throw new SparkAPIClientException("Session mapping error",e);
 		}
-		List<SparkSession> sessions = response.getResults(SparkSession.class);
-		if(sessions.isEmpty()){
-			throw new SparkAPIClientException("Service error.  No session returned for service authentication.");
-		}
-		Session s = sessions.get(0);
-		setSession(s);
+
 		return s;
 	}
 	
@@ -257,15 +254,6 @@ public class SparkAPI extends Client {
 		
 		return null;
 	}
-	
-	/*
-	public void initSparkHeader(HttpUriRequest httpRequest) throws SparkAPIClientException
-	{		
-		Map<String, String> headers = getDefaultHeaders();
-		for(String key : headers.keySet())
-			httpRequest.setHeader(key,headers.get(key));
-	}
-	*/
 	
 	public Map<String,String> getDefaultHeaders() throws SparkAPIClientException
 	{

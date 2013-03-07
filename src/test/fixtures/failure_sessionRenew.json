@@ -1,0 +1,7 @@
+{
+    "D": {
+        "Success": false,
+        "Code": 1020,
+        "Message": "Session token has expired"
+    }
+}

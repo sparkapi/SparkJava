@@ -6,12 +6,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonNode;
 import org.junit.Test;
 
 import com.sparkplatform.api.core.Configuration;
 import com.sparkplatform.api.core.MockConnection;
+import com.sparkplatform.api.core.Response;
 
 public class SparkAPIAuthTest {
 	
@@ -21,6 +26,8 @@ public class SparkAPIAuthTest {
 			authorizationURLBase + "openid.mode=id_res&openid.spark.code=foobar";
 	private static final String authorizationURLFail = 
 			"https://sparkplatform.com/ticket";
+	private static final String openIdSparkCode = "openIdSparkCode";
+
 	
 	private static final String openIdAuthorizationURLPass = 
 			authorizationURLBase + "openid.mode=id_res&openid.ax.value.id=foobar";
@@ -73,11 +80,10 @@ public class SparkAPIAuthTest {
 		try {
 
 			SparkAPI sparkAPI = getSparkAPI();
-			String openIdSparkCode = "openIdSparkCode";
 
 			((MockConnection)sparkAPI.getConnection()).stubPost(
 					"/" + sparkAPI.getConfig().getVersion() + "/oauth2/grant",
-					sparkAPI.getOAuthRequestJSON(openIdSparkCode),
+					sparkAPI.getOAuthRequestJSON("authorization_code",openIdSparkCode,null),
 					"spark_OAuthSuccess.json", 
 					200);
 
@@ -97,12 +103,15 @@ public class SparkAPIAuthTest {
 			
 			((MockConnection)sparkAPI.getConnection()).stubPost(
 					"/" + sparkAPI.getConfig().getVersion() + "/oauth2/grant",
-					sparkAPI.getOAuthRequestJSON(openIdSparkCode),
+					sparkAPI.getOAuthRequestJSON("authorization_code",openIdSparkCode,null),
 					"spark_OAuthFailure.json", 
 					200);
 
-			SparkSession session = sparkAPI.hybridAuthenticate(openIdSparkCode);
-			assertTrue(session.hasError());
+			try {
+				sparkAPI.hybridAuthenticate(openIdSparkCode);
+			} catch (SparkAPIClientException e) {
+				// success
+			}
 		} catch (Exception e) {
 			fail("Exception thrown");
 		}
@@ -119,14 +128,52 @@ public class SparkAPIAuthTest {
 	}
 	
 	@Test
-	public void testOpenIdAuthenticate() throws SparkAPIClientException {
-		Configuration c = new Configuration();
-		SparkAPI.setConfiguration(c);
-		c.setUserAgent("SparkAPITest");
+	public void testSessionRenew() {
+		try {
+			SparkAPI sparkAPI = getSparkAPI();
+			SparkSession session = new SparkSession();
+			session.setAccessToken("accessToken");
+			session.setRefreshToken("refreshToken");
+			sparkAPI.setSession(session);
+			
+			MockConnection mockConnection = ((MockConnection)sparkAPI.getConnection());
+			List<MockConnection.Stub> stubs = new ArrayList<MockConnection.Stub>();
+			stubs.add(new MockConnection.Stub("failure_sessionRenew.json", 300)); // first call fails
+			stubs.add(new MockConnection.Stub("spark_myAccount.json", 200)); // second call passes
+			mockConnection.stubGet(
+					"/" + sparkAPI.getConfig().getVersion() + "/my/account",
+					stubs);
+			mockConnection.stubPost(
+					"/" + sparkAPI.getConfig().getVersion() + "/oauth2/grant",
+					sparkAPI.getOAuthRequestJSON("refresh_token",null,session.getRefreshToken()),
+					"spark_OAuthSuccess.json", 
+					200);
+			
+			Response r = sparkAPI.get("/my/account",null);
+			assertNotNull(r);
+			assertTrue(r.isSuccess());
+			JsonNode account = r.getFirstResult();
+			assertNotNull(account);
+			assertEquals(account.get("Mls").getTextValue(),"Humboldt Association of REALTORS");
+		} catch (Exception e) {
+			fail("Exception thrown");
+		}
+	}
 
-		SparkAPI sparkAPI = SparkAPI.getInstance();
-		assertNotNull(sparkAPI.openIdAuthenticate(openIdAuthorizationURLPass));
-		assertNull(sparkAPI.openIdAuthenticate(authorizationURLFail));
+	
+	@Test
+	public void testOpenIdAuthenticate() {
+		try {
+			Configuration c = new Configuration();
+			SparkAPI.setConfiguration(c);
+			c.setUserAgent("SparkAPITest");
+
+			SparkAPI sparkAPI = SparkAPI.getInstance();
+			assertNotNull(sparkAPI.openIdAuthenticate(openIdAuthorizationURLPass));
+			assertNull(sparkAPI.openIdAuthenticate(authorizationURLFail));
+		} catch (SparkAPIClientException e) {
+			fail("SparkAPIClientException thrown");
+		}
 	}
 	
 }
