@@ -43,6 +43,7 @@ import com.sparkplatform.api.SparkAPIClientException;
  */
 public class ConnectionApacheHttp extends Connection<Response> {
 	
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ConnectionApacheHttp.class);
 	
 	private HttpClient client;

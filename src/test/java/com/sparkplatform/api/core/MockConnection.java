@@ -32,6 +32,7 @@ import com.sparkplatform.api.SparkAPIClientException;
 
 @SuppressWarnings("unchecked")
 public class MockConnection extends Connection<Response> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MockConnection.class);
 
 	JsonResponseHandler parser = new JsonResponseHandler();
