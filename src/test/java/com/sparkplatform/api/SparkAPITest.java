@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,7 +72,7 @@ public class SparkAPITest {
 			assertTrue(r.isSuccess());
 			JsonNode account = r.getFirstResult();
 			assertNotNull(account);
-			assertEquals(account.get("Mls").getTextValue(),"Humboldt Association of REALTORS");
+			assertEquals(account.get("Mls").textValue(),"Humboldt Association of REALTORS");
 		} catch (SparkAPIClientException e) {
 			fail("SparkAPIClientException thrown");
 		}

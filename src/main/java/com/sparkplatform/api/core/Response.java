@@ -17,12 +17,13 @@
 package com.sparkplatform.api.core;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sparkplatform.api.SparkAPIClientException;
 import com.sparkplatform.api.SparkAPIException;
@@ -82,7 +83,7 @@ public class Response {
 			}
 			for (int i = 0; i < results.size(); i++) {
 				JsonNode n = results.get(i);
-				T result = mapper.readValue(n, resultClass);
+				T result = mapper.treeToValue(n, resultClass);
 				r.add(result);
 			}
 			return r;

@@ -16,7 +16,7 @@
 
 package com.sparkplatform.api.models;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.sparkplatform.api.models.ResourceEntity;
 

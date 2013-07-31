@@ -19,7 +19,7 @@ package com.sparkplatform.api.models;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Listing extends ResourceEntity {
 	

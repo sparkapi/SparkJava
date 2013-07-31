@@ -21,8 +21,9 @@ import java.io.InputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sparkplatform.api.SparkAPIClientException;
 
@@ -31,6 +32,11 @@ import com.sparkplatform.api.SparkAPIClientException;
  */
 public class JsonResponseHandler implements ResponseHandler<Response> {
 	private ObjectMapper mapper = new ObjectMapper();
+	
+	public JsonResponseHandler() {
+		super();
+//		mapper.configure(DeserializationConfig.Feature.USE_BIG_DECIMAL_FOR_FLOATS, true);
+	}
 
 	@Override
 	public Response handleResponse(HttpResponse response) {
@@ -68,16 +74,16 @@ public class JsonResponseHandler implements ResponseHandler<Response> {
 		if(rootNode != null)
 		{
 			r = new Response(mapper, rootNode);
-			r.setSuccess(rootNode.get("Success").getValueAsBoolean());
+			r.setSuccess(rootNode.get("Success").booleanValue());
 			r.setStatus(status);
 			if(!r.isSuccess())
 			{
 				JsonNode codeNode = rootNode.get("Code");
 				if(codeNode != null && codeNode.isInt())
-					r.setCode(codeNode.getValueAsInt());
+					r.setCode(codeNode.intValue());
 				JsonNode messageNode = rootNode.get("Message");
 				if(messageNode != null)
-					r.setMessage(messageNode.getValueAsText());
+					r.setMessage(messageNode.textValue());
 			}
 		}
 		// OAuth response

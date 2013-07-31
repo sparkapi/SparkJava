@@ -19,6 +19,7 @@ package com.sparkplatform.api.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 import org.junit.Before;
@@ -86,7 +87,10 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(1, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("AbsorptionRate").size());
-		assertEquals(Double.valueOf(6.11), m.getMarketAttributes().get("AbsorptionRate").get(0));
+		Number n = Double.valueOf(6.11);
+		
+		Number n2 = m.getMarketAttributes().get("AbsorptionRate").get(0);
+		assertEquals(n.floatValue(), n2.floatValue(), 0.01);
 	}
 	
 	@Test

@@ -22,20 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.DeserializerProvider;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.JavaType;;
 
 
-@JsonDeserialize(using=StandardField.MapperDeserializer.class)
+//@JsonDeserialize(using=StandardField.MapperDeserializer.class)
 public class StandardField extends Base {
 	
 	private static final long serialVersionUID = 11L;
@@ -48,23 +47,23 @@ public class StandardField extends Base {
 	 * this deserializer I work around jackson to explicitly create the mapping and bind it to a 
 	 * class instance.
 	 */
-	public static class MapperDeserializer extends JsonDeserializer<StandardField> {
-		@SuppressWarnings("deprecation")
-		@Override
-		public StandardField deserialize(JsonParser jp,
-				DeserializationContext ctxt) throws IOException,
-				JsonProcessingException {
-			JavaType jt = TypeFactory.mapType(Map.class, String.class, Field.class);
-			DeserializerProvider deserializerProvider = ctxt.getDeserializerProvider();
-			JsonDeserializer<Object> z = deserializerProvider.findTypedValueDeserializer(ctxt.getConfig(), jt);
-			@SuppressWarnings("unchecked")
-			Map<String, Field>o = (Map<String, Field>)z.deserialize(jp, ctxt);
-			if(o == null) {
-				throw new JsonMappingException("StandardField entity doesn't support the format presented", jp.getTokenLocation());
-			}
-			return new StandardField(o);
-		}
-	}
+//	public static class MapperDeserializer extends JsonDeserializer<StandardField> {
+//		@SuppressWarnings("deprecation")
+//		@Override
+//		public StandardField deserialize(JsonParser jp,
+//				DeserializationContext ctxt) throws IOException,
+//				JsonProcessingException {
+//			JavaType jt = TypeFactory.mapType(Map.class, String.class, Field.class);
+//			DeserializerProvider deserializerProvider = ctxt.DeserializerProvider();
+//			JsonDeserializer<Object> z = deserializerProvider.findTypedValueDeserializer(ctxt.getConfig(), jt);
+//			@SuppressWarnings("unchecked")
+//			Map<String, Field>o = (Map<String, Field>)z.deserialize(jp, ctxt);
+//			if(o == null) {
+//				throw new JsonMappingException("StandardField entity doesn't support the format presented", jp.getTokenLocation());
+//			}
+//			return new StandardField(o);
+//		}
+//	}
 	
 	public enum Type {
 		Integer(Integer.class),

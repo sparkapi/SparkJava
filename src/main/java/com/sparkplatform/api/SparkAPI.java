@@ -12,10 +12,12 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sparkplatform.api.core.Client;
 import com.sparkplatform.api.core.Configuration;
@@ -178,7 +180,8 @@ public class SparkAPI extends Client {
 
 	private SparkSession getAuthSession(Response r) throws JsonParseException, JsonMappingException, IOException
 	{
-		String responseBody = r.getRootNode().toString();
+		JsonNode n = r.getRootNode();
+		String responseBody = n.toString();
 		logger.debug("OAuth2 response>" + responseBody);
 		return objectMapper.readValue(responseBody, SparkSession.class);
 	}

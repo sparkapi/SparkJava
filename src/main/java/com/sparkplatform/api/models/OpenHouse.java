@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OpenHouse extends ResourceEntity {
 	
