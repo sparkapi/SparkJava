@@ -32,7 +32,11 @@ import com.sparkplatform.api.core.PropertyAsserter;
 import com.sparkplatform.api.core.Response;
 import com.sparkplatform.api.services.MarketStatisticsService;
 
-
+/**
+ * Note on stats tests. The JSON parser implementation picks some interesting floating point types that do a number
+ * on the test values in certain java environments... I've soften the expectations on the results below accordingly,
+ * but it would be prefered to have dead on results.
+ */
 public class MarketStatisticTest {
 	private static final String JSON_ABSORPTION = "marketstatistics_absorption.json";
 	private static final String JSON_DOM = "marketstatistics_dom.json";
@@ -75,7 +79,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(2, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("SaleToOriginalListPriceRatio").size());
-		assertEquals(Double.valueOf(0.9834), m.getMarketAttributes().get("SaleToOriginalListPriceRatio").get(0));
+		assertEquals(0.9834, m.getMarketAttributes().get("SaleToOriginalListPriceRatio").get(0).doubleValue(), 0.0001);
 	}
 
 	@Test
@@ -86,7 +90,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(1, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("AbsorptionRate").size());
-		assertEquals(Double.valueOf(6.11), m.getMarketAttributes().get("AbsorptionRate").get(0));
+		assertEquals(6.11, m.getMarketAttributes().get("AbsorptionRate").get(0).doubleValue(), 0.01);
 	}
 	
 	@Test
@@ -97,7 +101,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(10, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("ActiveAverageListPrice").size());
-		assertEquals(Integer.valueOf(100000), m.getMarketAttributes().get("ActiveAverageListPrice").get(0));
+		assertEquals(100000, m.getMarketAttributes().get("ActiveAverageListPrice").get(0).intValue());
 	}
 
 	@Test
@@ -108,7 +112,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(2, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("AverageDom").size());
-		assertEquals(Integer.valueOf(100), m.getMarketAttributes().get("AverageDom").get(0));
+		assertEquals(100, m.getMarketAttributes().get("AverageDom").get(0).intValue());
 	}
 
 	@Test
@@ -119,7 +123,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(4, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("ActiveListings").size());
-		assertEquals(Integer.valueOf(10000), m.getMarketAttributes().get("ActiveListings").get(0));
+		assertEquals(10000, m.getMarketAttributes().get("ActiveListings").get(0).intValue());
 	}
 
 	@Test
@@ -130,7 +134,7 @@ public class MarketStatisticTest {
 		assertEquals(0, m.getAttributes().size());
 		assertEquals(5, m.getMarketAttributes().size());
 		assertEquals(12, m.getMarketAttributes().get("ActiveListVolume").size());
-		assertEquals(Integer.valueOf(135650975), m.getMarketAttributes().get("ActiveListVolume").get(0));
+		assertEquals(135650975, m.getMarketAttributes().get("ActiveListVolume").get(0).intValue());
 	}
 
 }

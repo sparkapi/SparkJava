@@ -56,7 +56,7 @@ public class MarketStatistic extends Base {
 		
 	}
 
-	private Map<String, List<Float>> attributes = new HashMap<String, List<Float>>();
+	private Map<String, List<Number>> attributes = new HashMap<String, List<Number>>();
 	
 	public static enum MarketStatFields {
 		// Volume
@@ -108,7 +108,7 @@ public class MarketStatistic extends Base {
 	public void setAttribute(String key, Object obj){
 		if (MarketStatFields.valueOf(key) != null) {
 			@SuppressWarnings("unchecked")
-			List<Float> floats = (List<Float>)obj;
+			List<Number> floats = (List<Number>)obj;
 			if(floats != null){
 				setAttribute(key, floats);
 				return;
@@ -118,14 +118,14 @@ public class MarketStatistic extends Base {
 		super.setAttribute(key, obj);
 	}
 	
-	public void setAttribute(String key, List<Float> value){
+	public void setAttribute(String key, List<Number> value){
 		if(logger.isDebugEnabled()){
 			logger.debug("Added attribute: "  + key);
 		}
 		attributes.put(key, value);
 	}
 
-	public Map<String, List<Float>> getMarketAttributes(){
+	public Map<String, List<Number>> getMarketAttributes(){
 		return attributes;
 	}	
 
