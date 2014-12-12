@@ -4,7 +4,15 @@
   <artifactId>SparkJava</artifactId>
   <version>1.0</version>
   <name>SparkJava</name>
-  
+
+	<repositories>
+		<repository>
+			<id>mrp-mavenrepo</id>
+			<url>http://mavenrepo.myrealpage.com/</url>
+			<layout>legacy</layout>
+		</repository>
+	</repositories>
+
   <dependencies>
       
       	<!--  SparkAPI dependencies -->
@@ -46,15 +54,44 @@
   </dependencies>
   
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>      
-    </plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+			</extension>
+		</extensions>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>      
+			
+			<!-- Generate  Source jar -->
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
   </build>
+
+	<distributionManagement>
+        <repository>
+            <id>mrp</id>
+            <name>MRP Repo</name>
+            <url>scp://mavenrepo.myrealpage.com:/data/vol2/sites/mavenrepo.myrealpage.com/m2/repo</url>
+        </repository>
+	</distributionManagement>
 </project>
