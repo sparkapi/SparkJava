@@ -28,7 +28,7 @@ public class SparkAPI extends Client {
 
 	// configuration **********************************************************
 	
-	public static final String sparkCallbackURL = "https://sparkplatform.com/oauth2/callback";
+	public String sparkCallbackURL = "https://sparkplatform.com/oauth2/callback";
 	
 	// constants **************************************************************
 	
@@ -194,7 +194,7 @@ public class SparkAPI extends Client {
 			map.put("code", openIdSparkCode);
 		if(refreshToken != null)
 			map.put("refresh_token", refreshToken);
-		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
+		map.put("redirect_uri", sparkCallbackURL);
 		return objectMapper.writeValueAsString(map);
 	}
 	
