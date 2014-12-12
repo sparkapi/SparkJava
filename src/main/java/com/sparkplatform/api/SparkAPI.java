@@ -163,10 +163,14 @@ public class SparkAPI extends Client {
 			Response r = connection.post(getSparkOAuth2GrantPath(), getOAuthRequestJSON("authorization_code", openIdSparkCode, null));
 			sparkSession = getAuthSession(r);
 			setSession(sparkSession);
-		} 
+		}
+		catch (SparkAPIClientException e)
+		{
+			throw e;
+		}
 		catch (Exception e)
 		{
-			logger.error("exception>", e);
+			throw new SparkAPIClientException(e.getMessage(), e);
 		}
 
 		return sparkSession;
