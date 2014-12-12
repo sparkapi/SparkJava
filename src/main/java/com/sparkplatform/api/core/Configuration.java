@@ -39,6 +39,7 @@ public class Configuration {
 		API_KEY,
 		API_SECRET,
 		API_USER,
+		CALLBACK_URL,
 		ENDPOINT,
 		SSL,
 		VERSION,
@@ -48,6 +49,7 @@ public class Configuration {
 	private String apiSecret;
 	private String apiKey;
 	private String apiUser;
+	private String callbackUrl = "https://sparkplatform.com/oauth2/callback";
 	private String endpoint = "sparkapi.com";
 	private String version = "v1";
 	private boolean ssl;
@@ -70,6 +72,12 @@ public class Configuration {
 	}
 	public void setApiUser(String apiUser) {
 		this.apiUser = apiUser;
+	}
+	public String getCallbackUrl() {
+		return callbackUrl;
+	}
+	public void setCallbackUrl( String callbackUrl ) {
+		this.callbackUrl = callbackUrl;
 	}
 	public String getEndpoint() {
 		return endpoint;
@@ -145,6 +153,9 @@ public class Configuration {
 		}
 		if(map.containsKey(KEYS.API_SECRET.toString())){
 			c.setApiSecret(map.get(KEYS.API_SECRET.toString()));
+		}
+		if(map.containsKey(KEYS.CALLBACK_URL.toString())){
+			c.setCallbackUrl(map.get(KEYS.CALLBACK_URL.toString()));
 		}
 		if(map.containsKey(KEYS.ENDPOINT.toString())){
 			c.setEndpoint(map.get(KEYS.ENDPOINT.toString()));
