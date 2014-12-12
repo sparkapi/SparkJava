@@ -26,10 +26,6 @@ import com.sparkplatform.api.core.Session;
 
 public class SparkAPI extends Client {
 
-	// configuration **********************************************************
-	
-	public static final String sparkCallbackURL = "https://sparkplatform.com/oauth2/callback";
-	
 	// constants **************************************************************
 	
 	public static final String sparkOpenIdLogoutURL = "https://sparkplatform.com/openid/logout";
@@ -102,7 +98,7 @@ public class SparkAPI extends Client {
 		builder.append("&openid.spark.client_id=");
 		encodeParam(builder, getConfig().getApiKey());
 		builder.append("&openid.return_to=");
-		encodeParam(builder, sparkCallbackURL);
+		encodeParam(builder, getConfig().getCallbackUrl());
 		return builder.toString();
 	}
 	
@@ -194,7 +190,7 @@ public class SparkAPI extends Client {
 			map.put("code", openIdSparkCode);
 		if(refreshToken != null)
 			map.put("refresh_token", refreshToken);
-		map.put("redirect_uri", SparkAPI.sparkCallbackURL);
+		map.put("redirect_uri", getConfig().getCallbackUrl());
 		return objectMapper.writeValueAsString(map);
 	}
 	
