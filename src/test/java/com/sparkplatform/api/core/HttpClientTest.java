@@ -42,13 +42,13 @@ public class HttpClientTest {
 	@Test
 	public void testGet() throws IOException{
 		HttpClient c = new DefaultHttpClient();
-		HttpHost h = new HttpHost("frink.fbsdata.com");
+		HttpHost h = new HttpHost("www.sparkplatform.com");
 		
-		HttpRequest r = new HttpGet("/~wade/");
+		HttpRequest r = new HttpGet("/");
 		HttpResponse rs = c.execute(h,r);
 		assertEquals(200, rs.getStatusLine().getStatusCode());
 		
-		assertTrue(readString(rs.getEntity().getContent()).contains("KaPOW!"));
+		assertTrue(readString(rs.getEntity().getContent()).contains("Spark"));
 		
 	}
 	
