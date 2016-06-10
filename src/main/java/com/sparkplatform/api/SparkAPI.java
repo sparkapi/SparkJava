@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,10 +164,14 @@ public class SparkAPI extends Client {
 			Response r = connection.post(getSparkOAuth2GrantPath(), getOAuthRequestJSON("authorization_code", openIdSparkCode, null));
 			sparkSession = getAuthSession(r);
 			setSession(sparkSession);
-		} 
+		}
+		catch (SparkAPIClientException e)
+		{
+			throw e;
+		}
 		catch (Exception e)
 		{
-			logger.error("exception>", e);
+			throw new SparkAPIClientException(e.getMessage(), e);
 		}
 
 		return sparkSession;
@@ -176,7 +181,9 @@ public class SparkAPI extends Client {
 	{
 		String responseBody = r.getRootNode().toString();
 		logger.debug("OAuth2 response>" + responseBody);
-		return objectMapper.readValue(responseBody, SparkSession.class);
+		SparkSession session = objectMapper.readValue(responseBody, SparkSession.class);
+		session.setStartTime(new Date());
+		return session;
 	}
 	
 	protected String getOAuthRequestJSON(String grantType, String openIdSparkCode, String refreshToken) throws JsonGenerationException, JsonMappingException, IOException

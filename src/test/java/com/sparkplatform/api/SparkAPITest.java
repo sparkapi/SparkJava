@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +55,8 @@ public class SparkAPITest {
 			SparkSession session = new SparkSession();
 			session.setAccessToken("accessToken");
 			session.setRefreshToken("refreshToken");
+			session.setStartTime(new Date());
+			session.setExpiresIn(86400);
 			sparkAPI.setSession(session);
 		} catch (SparkAPIClientException e) {
 			fail("SparkAPIClientException thrown");
