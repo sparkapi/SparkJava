@@ -19,6 +19,8 @@ package com.sparkplatform.api;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 public class SparkSessionTest {
@@ -62,6 +64,8 @@ public class SparkSessionTest {
 		SparkSession session = new SparkSession();
 		session.setAccessToken("accessToken");
 		session.setRefreshToken("refreshToken");
+		session.setStartTime(new Date());
+		session.setExpiresIn(86400);
 		return session;
 	}
 	

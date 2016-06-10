@@ -16,6 +16,9 @@
 
 package com.sparkplatform.api;
 
+import java.util.Date;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.sparkplatform.api.core.Session;
@@ -26,9 +29,14 @@ public class SparkSession extends Session {
 	@JsonProperty("refresh_token")
 	private String refreshToken;
 	private String openIDToken;
-	
+
+	@JsonIgnore
+	private Date startTime;
+
 	@JsonProperty("expires_in")
 	private int expiresIn;
+	@JsonIgnore
+	private int refreshTimeout = 43200;
 	@JsonProperty("error")
 	private String error;
 	@JsonProperty("error_description")
@@ -59,7 +67,8 @@ public class SparkSession extends Session {
 	}
 	
 	public boolean isExpired(){
-		return accessToken == null || refreshToken == null;
+		return accessToken == null || refreshToken == null || expiresIn == 0
+				|| startTime == null || startTime.getTime() + expiresIn - refreshTimeout < System.currentTimeMillis();
 	}
 	
 	public boolean isHybridSession() {
@@ -74,6 +83,14 @@ public class SparkSession extends Session {
 		throw new SparkAPIClientException("Spark authentication required");
 	}
 	
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
 	public int getExpiresIn()
 	{
 		return expiresIn;
@@ -83,6 +100,14 @@ public class SparkSession extends Session {
 	{
 		this.expiresIn = expiresIn;
 	}
+
+	public int getRefreshTimeout() {
+		return refreshTimeout;
+	}
+
+	public void setRefreshTimeout(int refreshTimeout) {
+		this.refreshTimeout = refreshTimeout;
+	}	
 
 	public boolean hasError()
 	{
@@ -107,5 +132,5 @@ public class SparkSession extends Session {
 	public void setErrorDescription(String errorDescription)
 	{
 		this.errorDescription = errorDescription;
-	}	
+	}
 }
