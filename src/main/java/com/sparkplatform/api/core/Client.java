@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sparkplatform.api.services.ContactService;
+import com.sparkplatform.api.services.CustomFieldService;
 import com.sparkplatform.api.services.ListingService;
 import com.sparkplatform.api.services.MarketStatisticsService;
 import com.sparkplatform.api.services.PropertyTypeService;
@@ -63,6 +64,7 @@ public class Client extends BaseClient<ApiParameter> {
 	private MarketStatisticsService marketStatisticsService;
 	private SystemInfoService systemInfoService;
 	private StandardFieldService standardFieldService;
+	private CustomFieldService customFieldService;
 	
 	public ContactService getContactService() {
 		if(contactService == null){
@@ -129,6 +131,17 @@ public class Client extends BaseClient<ApiParameter> {
 
 	public void setStandardFieldService(StandardFieldService standardFieldService) {
 		this.standardFieldService = standardFieldService;
+	}
+	
+	public CustomFieldService getCustomFieldService() {
+		if(customFieldService == null){
+			customFieldService = new CustomFieldService(this);
+		}
+		return customFieldService;
+	}
+
+	public void setCustomFieldService(CustomFieldService customFieldService) {
+		this.customFieldService = customFieldService;
 	}
 	
 }

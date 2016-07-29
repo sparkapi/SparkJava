@@ -1,0 +1,43 @@
+{
+    "D": {
+        "Success": true,
+        "LastUpdated": "2012-11-01T20:52:13Z",
+        "Results": [
+          {
+            "General Property Description": {
+              "Fields": {
+                "Directions": {
+                  "ResourceUri": "/v1/customfields/Directions",
+                  "HasList": false,
+                  "Label": "Directions",
+                  "MaxListSize": 0,
+                  "Searchable": true,
+                  "Type": "Character",
+                  "MlsVisible": ["A", "G", "M"]
+                },
+                "Flood Plain": {
+                  "ResourceUri": "/v1/customfields/Flood Plain",
+                  "HasList": true,
+                  "MultiSelect": false,
+                  "Label": "Flood Plain",
+                  "MaxListSize": false,
+                  "Searchable": true,
+                  "Type": "Character",
+                  "MlsVisible": ["A", "G", "I", "J", "M"]
+                },
+                "Taxes": {
+                  "ResourceUri": "/v1/customfields/Taxes",
+                  "HasList": false,
+                  "Label": "Taxes",
+                  "MaxListSize": 0,
+                  "Searchable": true,
+                  "Type": "Decimal",
+                  "MlsVisible": ["B", "C", "E"]
+                }
+              },
+              "Label": "General Property Description"
+            }
+          }
+        ]
+    }
+}

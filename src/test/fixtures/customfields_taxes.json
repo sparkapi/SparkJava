@@ -1,0 +1,18 @@
+{
+    "D": {
+        "Success": true,
+        "Results": [
+          {
+            "Taxes": {
+              "ResourceUri": "/v1/customfields/Taxes",
+              "HasList": false,
+              "Label": "Taxes",
+              "MaxListSize": 0,
+              "Searchable": true,
+              "Type": "Decimal",
+              "MlsVisible": ["B", "C", "E"]
+            }
+          }
+        ]
+    }
+}
