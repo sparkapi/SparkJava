@@ -36,7 +36,7 @@ public class SparkSession extends Session {
 	@JsonProperty("expires_in")
 	private int expiresIn;
 	@JsonIgnore
-	private int refreshTimeout = 43200;
+	private int refreshTimeout = 0;
 	@JsonProperty("error")
 	private String error;
 	@JsonProperty("error_description")
@@ -99,7 +99,8 @@ public class SparkSession extends Session {
 	public void setExpiresIn(int expiresIn)
 	{
 		this.expiresIn = expiresIn;
-		this.refreshTimeout = expiresIn / 2;
+		if (this.refreshTimeout==0)
+			this.refreshTimeout = expiresIn / 2;
 	}
 
 	public int getRefreshTimeout() {
