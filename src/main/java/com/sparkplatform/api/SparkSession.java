@@ -36,7 +36,7 @@ public class SparkSession extends Session {
 	@JsonProperty("expires_in")
 	private int expiresIn;
 	@JsonIgnore
-	private int refreshTimeout = 43200;
+	private int refreshTimeout = 0;
 	@JsonProperty("error")
 	private String error;
 	@JsonProperty("error_description")
@@ -68,7 +68,7 @@ public class SparkSession extends Session {
 	
 	public boolean isExpired(){
 		return accessToken == null || refreshToken == null || expiresIn == 0
-				|| startTime == null || startTime.getTime() + expiresIn - refreshTimeout < System.currentTimeMillis();
+				|| startTime == null || startTime.getTime() + expiresIn*1000 - refreshTimeout*1000 < System.currentTimeMillis();
 	}
 	
 	public boolean isHybridSession() {
@@ -99,6 +99,8 @@ public class SparkSession extends Session {
 	public void setExpiresIn(int expiresIn)
 	{
 		this.expiresIn = expiresIn;
+		if (this.refreshTimeout==0)
+			this.refreshTimeout = expiresIn / 2;
 	}
 
 	public int getRefreshTimeout() {
