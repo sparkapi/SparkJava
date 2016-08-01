@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,6 +34,7 @@ import com.sparkplatform.api.SparkAPIException;
  * this format.
  */
 public class Response {
+	private static Logger logger = Logger.getLogger(Response.class);
 	private ObjectMapper mapper = new ObjectMapper();
 	private int code;
 	private int status;
@@ -44,12 +46,18 @@ public class Response {
 	public Response(SparkAPIClientException exception) {
 		super();
 		this.exception = exception;
+		logger.error( exception.getMessage(), exception );
 	}
 
 	public Response(ObjectMapper mapper,JsonNode rootNode) {
 		super();
 		this.mapper = mapper;
 		this.rootNode = rootNode;
+		if (logger.isDebugEnabled()) {
+			try {
+				logger.debug( new ObjectMapper().defaultPrettyPrintingWriter().writeValueAsString(rootNode) );
+			} catch (Exception e) {}
+		}
 	}
 	public int getCode() {
 		return code;
