@@ -56,7 +56,7 @@ public class CustomField extends Base {
 				JsonProcessingException {
 			JavaType jt = TypeFactory.mapType(Map.class, String.class, Field.class);
 			DeserializerProvider deserializerProvider = ctxt.getDeserializerProvider();
-			JsonDeserializer<Object> z = deserializerProvider.findTypedValueDeserializer(ctxt.getConfig(), jt);
+			JsonDeserializer<Object> z = deserializerProvider.findTypedValueDeserializer(ctxt.getConfig(), jt, null);
 			@SuppressWarnings("unchecked")
 			Map<String, Field>o = (Map<String, Field>)z.deserialize(jp, ctxt);
 			if(o == null) {

@@ -85,6 +85,10 @@ public class JsonResponseHandler implements ResponseHandler<Response> {
 		{
 			r = new Response(mapper,root);
 			r.setSuccess(root.get("error") == null);
+			r.setStatus(status);
+			if (!r.isSuccess()) {
+				r.setMessage(root.get("error_description").getTextValue());
+			}
 		}
 			
 		return r;		

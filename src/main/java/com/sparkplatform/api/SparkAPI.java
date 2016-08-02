@@ -22,6 +22,7 @@ import com.sparkplatform.api.core.Client;
 import com.sparkplatform.api.core.Configuration;
 import com.sparkplatform.api.core.Connection;
 import com.sparkplatform.api.core.ConnectionApacheHttp;
+import com.sparkplatform.api.core.ISessionListener;
 import com.sparkplatform.api.core.Response;
 import com.sparkplatform.api.core.Session;
 
@@ -229,6 +230,7 @@ public class SparkAPI extends Client {
 		try {
 			Response response = getConnection().post(getSparkOAuth2GrantPath(),getOAuthRequestJSON("refresh_token", null, getSparkSession().getRefreshToken()));
 			s = getAuthSession(response);
+			setSession(s);
 		} catch (Exception e) {
 			throw new SparkAPIClientException("Session mapping error",e);
 		}
