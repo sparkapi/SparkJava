@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import com.sparkplatform.api.SparkAPIClientException;
 import com.sparkplatform.api.SparkAPIException;
+import com.sparkplatform.api.SparkSession;
 
 /**
  * Client class for communicating with the flexmls restful interface.  Abstracts the HTTP,
@@ -44,6 +45,7 @@ public abstract class BaseClient<U> implements HttpActions<Response, U>{
 	private Connection<Response> connection;
 	private Connection<Response> secure;
 	private Session session;
+	private ISessionListener sessionListener;
 
 	/**
 	 * Configure the client with general settings, and connection implementations
@@ -217,6 +219,8 @@ public abstract class BaseClient<U> implements HttpActions<Response, U>{
 
 	public void setSession(Session session) throws SparkAPIClientException {
 		this.session = session;
+		if (sessionListener!=null)
+			sessionListener.sessionChanged( session );
 	}
 
 	public Configuration getConfig() {
@@ -271,6 +275,14 @@ public abstract class BaseClient<U> implements HttpActions<Response, U>{
 			throw new SparkAPIClientException("Session expired and maximum number of authentication attempts reached.");
 		}
 		protected abstract Response run(String path, String body) throws SparkAPIClientException;
+	}
+
+	public ISessionListener getSessionListener() {
+		return sessionListener;
+	}
+
+	public void setSessionListener( ISessionListener sessionListener ) {
+		this.sessionListener = sessionListener;
 	}
 
 }
