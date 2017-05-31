@@ -28,6 +28,9 @@ public class IntegerField implements Serializable {
 	public IntegerField(double val) {
 		value = Integer.valueOf( (int)val );
 	}
+	public IntegerField() {
+		value = null;
+	}
 	public Integer getValue() {
 		return value;
 	}

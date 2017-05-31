@@ -27,6 +27,9 @@ public class DoubleField implements Serializable {
 	public DoubleField(double val) {
 		value = Double.valueOf( val );
 	}
+	public DoubleField() {
+		value = null;
+	}
 	public Double getValue() {
 		return value;
 	}
