@@ -22,6 +22,9 @@ public class DateField implements Serializable {
 			}
 		}
 	}
+	public DateField() {
+		value = null;
+	}
 	public Date getValue() {
 		return value;
 	}

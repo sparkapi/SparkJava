@@ -53,7 +53,7 @@ public class ConnectionApacheHttpTest {
 	
 	@Test
 	public void get() throws IOException, SparkAPIClientException{
-		Response rs = new Response(null);
+		Response rs = new Response();
 		rs.setSuccess(true);
 		mockupHttpClient(rs, HttpGet.class);
 		Response rs2 = c.get("TESTGET");
@@ -62,7 +62,7 @@ public class ConnectionApacheHttpTest {
 
 	@Test
 	public void delete() throws IOException, SparkAPIClientException{
-		Response rs = new Response(null);
+		Response rs = new Response();
 		rs.setSuccess(true);
 		mockupHttpClient(rs, HttpDelete.class);
 		Response rs2 = c.delete("TESTDELETE");
@@ -71,7 +71,7 @@ public class ConnectionApacheHttpTest {
 
 	@Test
 	public void post() throws IOException, SparkAPIClientException{
-		Response rs = new Response(null);
+		Response rs = new Response();
 		rs.setSuccess(true);
 		mockupHttpClient(rs, HttpPost.class);
 		Response rs2 = c.post("TESTPOST", "data");
@@ -80,7 +80,7 @@ public class ConnectionApacheHttpTest {
 
 	@Test
 	public void put() throws IOException, SparkAPIClientException{
-		Response rs = new Response(null);
+		Response rs = new Response();
 		rs.setSuccess(true);
 		mockupHttpClient(rs, HttpPut.class);
 		Response rs2 = c.put("TESTPUT", "data");

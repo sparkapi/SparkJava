@@ -211,7 +211,6 @@ public class Listing extends ResourceEntity {
 		private String supplement;
 		@JsonProperty("ModificationTimestamp")
 		private DateField modificationTimestamp;
-
 		
 		public String getListingKey() {
 			return listingKey;
@@ -357,10 +356,10 @@ public class Listing extends ResourceEntity {
 		public void setSubdivisionName( String subdivisionName ) {
 			this.subdivisionName = subdivisionName;
 		}
-		public String getmLSAreaMinor() {
+		public String getMLSAreaMinor() {
 			return mLSAreaMinor;
 		}
-		public void setmLSAreaMinor( String mLSAreaMinor ) {
+		public void setMLSAreaMinor( String mLSAreaMinor ) {
 			this.mLSAreaMinor = mLSAreaMinor;
 		}
 		public String getCountyOrParish() {

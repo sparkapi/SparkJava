@@ -45,14 +45,6 @@ public class ClientTest {
 		c = new SimpleClient(config, conn, conn);
 		sample = new HashMap<String, String>();
 		sample.put("Optimus",   "semi");
-		sample.put("Soundwave", "walkman");
-		sample.put("Starscream", "F-15 Eagle");
-		sample.put("Megatron",  "Walther P-38");
-	}
-	
-	@Test
-	public void testProperties(){
-		PropertyAsserter.assertBasicGetterSetterBehavior(c);
 	}
 
 	@Test
@@ -66,7 +58,7 @@ public class ClientTest {
 	public void testGet() throws SparkAPIClientException {
 		mockAuth();
 		conn.stubGet(
-			"/v1/test?ApiSig=1fcc1c5f58cc504fbffd79784cb1fad8&AuthToken=c729d695fc1613af58de764fa44881cb&Soundwave=walkman&Starscream=F-15+Eagle&Megatron=Walther+P-38&Optimus=semi",
+			"/v1/test?ApiSig=bdda4bb352d81b55079bf1649d040e02&AuthToken=c729d695fc1613af58de764fa44881cb&Optimus=semi",
 			"test.json", 
 			200);
 		Response r = c.get("/test", sample);
@@ -82,7 +74,7 @@ public class ClientTest {
 	public void testPost() throws SparkAPIClientException {
 		mockAuth();
 		conn.stubPost(
-			"/v1/test?ApiSig=820f36fdd9a59154007b39f3dc3bc912&AuthToken=c729d695fc1613af58de764fa44881cb&Soundwave=walkman&Starscream=F-15+Eagle&Megatron=Walther+P-38&Optimus=semi",
+			"/v1/test?ApiSig=9f3410317a5f1bae4cf735fcff558d42&AuthToken=c729d695fc1613af58de764fa44881cb&Optimus=semi",
 			"foo=Test&bar=10",
 			"success.json",
 			201);
@@ -94,7 +86,7 @@ public class ClientTest {
 	public void testPut() throws SparkAPIClientException {
 		mockAuth();
 		conn.stubPut(
-				"/v1/test/1234?ApiSig=2649baff1e76ae996fa1b76a6cbff86b&AuthToken=c729d695fc1613af58de764fa44881cb&Soundwave=walkman&Starscream=F-15+Eagle&Megatron=Walther+P-38&Optimus=semi",
+				"/v1/test/1234?ApiSig=fdeaab15ff9186adcd9bd50d1be8830c&AuthToken=c729d695fc1613af58de764fa44881cb&Optimus=semi",
 				"foo=Test&bar=10",
 				"success.json",
 				201);
@@ -106,7 +98,7 @@ public class ClientTest {
 	public void testDelete() throws SparkAPIClientException {
 		mockAuth();
 		conn.stubDelete(
-				"/v1/test/1234?ApiSig=bd358131c3f975ef9f137a3b17cdfa35&AuthToken=c729d695fc1613af58de764fa44881cb&Soundwave=walkman&Starscream=F-15+Eagle&Megatron=Walther+P-38&Optimus=semi",
+				"/v1/test/1234?ApiSig=a9cb40ccb9ec78c705110f7bc07d9549&AuthToken=c729d695fc1613af58de764fa44881cb&Optimus=semi",
 				"success.json", 
 				200);
 		Response r = c.delete("/test/1234", sample);
@@ -129,11 +121,17 @@ public class ClientTest {
 
 	@Test
 	public void testSignToken() {
+		sample.put("Soundwave", "walkman");
+		sample.put("Starscream", "F-15 Eagle");
+		sample.put("Megatron",  "Walther P-38");
 		assertEquals("f7c26177fbc4eaf63560eecebdbb34a4", c.signToken("/path", sample, ""));
 	}
 
 	@Test
 	public void testBuildParamString() {
+		sample.put("Soundwave", "walkman");
+		sample.put("Starscream", "F-15 Eagle");
+		sample.put("Megatron",  "Walther P-38");		
 		assertEquals("MegatronWalther+P-38OptimussemiSoundwavewalkmanStarscreamF-15+Eagle", c.buildParamString(sample));
 	}
 	

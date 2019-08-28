@@ -43,6 +43,10 @@ public class Response {
 	private JsonNode rootNode;
 	private SparkAPIClientException exception;
 	
+	public Response() {
+		super();
+	}
+	
 	public Response(SparkAPIClientException exception) {
 		super();
 		this.exception = exception;
