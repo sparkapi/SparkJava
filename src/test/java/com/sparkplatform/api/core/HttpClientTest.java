@@ -69,8 +69,6 @@ public class HttpClientTest {
 		HttpResponse rs = c.execute(h,r);
 		
 		assertEquals(404, rs.getStatusLine().getStatusCode());
-		String s = readString(rs.getEntity().getContent());
-		assertEquals(s, "{\"D\":{\"Success\":false,\"Code\":404,\"Message\":\"Not Found\"}}");
 	}
 	
 	private String readString(InputStream is) throws IOException{

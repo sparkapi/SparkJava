@@ -2,6 +2,10 @@
 target/
 *.class
 
+# IntelliJ
+.idea/
+*.iml
+
 # eclipse
 .settings
 
