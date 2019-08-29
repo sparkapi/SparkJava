@@ -24,17 +24,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.Test;
 
 public class HttpClientTest {
@@ -54,21 +51,19 @@ public class HttpClientTest {
 	
 	@Test
 	public void testSSL() throws Exception {
-		
-		SSLContext sslContext = SSLContext.getInstance("TLS");
-		sslContext.init(null,new TrustManager[]{new ConnectionApacheHttps.FullTrustManager()},null);
-		HttpClient c = new DefaultHttpClient();
-		//SSLSocketFactory sf = new SSLSocketFactory(sslContext,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
-		@SuppressWarnings("deprecation")
-		Scheme https = new Scheme("https", sf, 443);
-		c.getConnectionManager().getSchemeRegistry().register(https);
-		HttpHost h = new HttpHost("api.flexmls.com", 443, "https");
-		
-		HttpRequest r = new HttpGet("/v1/");
-		HttpResponse rs = c.execute(h,r);
-		
+        SSLContextBuilder builder = new SSLContextBuilder();
+        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                builder.build());
+        HttpClient c = HttpClients.custom().setSSLSocketFactory(
+                sslsf).build();
+
+        HttpGet httpGet = new HttpGet("https://sparkapi.com/v1");
+		HttpResponse rs = c.execute(httpGet);
+
 		assertEquals(404, rs.getStatusLine().getStatusCode());
+		String s = readString(rs.getEntity().getContent());
+		assertEquals(s, "{\"D\":{\"Success\":false,\"Code\":404,\"Message\":\"Not Found\"}}");
 	}
 	
 	private String readString(InputStream is) throws IOException{
@@ -85,7 +80,4 @@ public class HttpClientTest {
         reader.close();
         return fileData.toString();
 	}
-	
-
-
 }
